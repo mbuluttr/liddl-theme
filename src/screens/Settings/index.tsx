@@ -2,42 +2,17 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { styles } from './style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Animated, { interpolateColor, useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { useTheme } from '../../contexts/ThemeContext';
 import { AppStackProps } from '../../types/NavigationTypes';
-import { Colors } from '../../types/ThemeTypes';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAnimatedColors } from '../../hooks/AnimatedColors';
 
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 const Settings = ({ navigation }: AppStackProps) => {
   const { theme, themeColor, changeTheme } = useTheme();
-
-  const progress = useDerivedValue(() => {
-    return theme === 'dark' ? withTiming(1) : withTiming(0);
-  }, [theme]);
-
-  const animatedContainerColor = useAnimatedStyle(() => {
-    const backgroundColor = interpolateColor(progress.value, [0, 1], [Colors.light.background, Colors.dark.background]);
-
-    return {
-      backgroundColor: backgroundColor,
-    };
-  });
-
-  const animatedTextColor = useAnimatedStyle(() => {
-    const textColor = interpolateColor(progress.value, [0, 1], [Colors.light.text, Colors.dark.text]);
-    return {
-      color: textColor,
-    };
-  });
-
-  const animatedSubtitleColor = useAnimatedStyle(() => {
-    const textColor = interpolateColor(progress.value, [0, 1], [Colors.light.subtitle, Colors.dark.subtitle]);
-    return {
-      color: textColor,
-    };
-  });
+  const { animatedContainerColor, animatedSubtitleColor, animatedTextColor } = useAnimatedColors();
 
   return (
     <AnimatedSafeAreaView style={[styles.container, animatedContainerColor]}>
